@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 # from typing import Union, List
 # from pydantic import BaseModel
 
-models.Base.metadata.create_all(bind=engine)
+# models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
