@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
 
-def create_product(db: Session, product: schemas.ProductCreate) -> models.Product:
+def create_product(db: Session, product: schemas.Product) -> models.Product:
     db_product = models.Product(
         name=product.name,
         uom=product.uom,
@@ -22,19 +22,20 @@ def create_product(db: Session, product: schemas.ProductCreate) -> models.Produc
             sku=variant.sku,
             sales_price=variant.sales_price,
             purchase_price=variant.purchase_price,
-            type=variant.type,
-            created_at=variant.created_at,
-            updated_at=variant.updated_at
+            id=variant.id,
+            product=db_product
         )
         
         for config_attribute in variant.config_attributes:
             db_config_attribute = models.ConfigAttribute(
                 config_name=config_attribute.config_name,
-                config_value=config_attribute.config_value
+                config_value=config_attribute.config_value,
+                id=config_attribute.id,
+                variant=db_variant
             )
-            db_variant.config_attributes.append(db_config_attribute)
+            db.add(db_config_attribute)
         
-        db_product.variants.append(db_variant)
+        db.add(db_variant)
     
     db.add(db_product)
     db.commit()

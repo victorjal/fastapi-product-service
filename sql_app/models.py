@@ -21,9 +21,7 @@ class Product(Base):
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
 
-    __table_args__ = (
-        UniqueConstraint('updated_at', 'created_at', 'type', name='product_un'),
-    )
+    variants = relationship('Variant', backref='products')
 
 class Variant(Base):
     __tablename__ = 'variants'
@@ -33,17 +31,16 @@ class Variant(Base):
     sales_price = Column(Integer)
     purchase_price = Column(Integer)
     product_id = Column(Integer, ForeignKey('products.id'))
-    type = Column(String, ForeignKey('products.type'))
-    created_at = Column(DateTime, ForeignKey('products.created_at'))
-    updated_at = Column(DateTime, ForeignKey('products.updated_at'))
 
-    product = relationship('Product', backref='variants')
+    products = relationship('Product', backref='variants', foreign_keys=[product_id])
+    config_attributes = relationship('ConfigAttribute', backref='variants')
 
 class ConfigAttribute(Base):
     __tablename__ = 'config_attributes'
 
-    config_name = Column(String, primary_key=True)
+    config_name = Column(String)
     config_value = Column(String)
     variant_id = Column(Integer, ForeignKey('variants.id'))
+    id = Column(Integer, primary_key=True)
 
-    variant = relationship('Variant', backref='config_attributes', cascade='all, delete')
+    variants = relationship('Variant', backref='config_attributes', cascade='all, delete', foreign_keys=[variant_id])

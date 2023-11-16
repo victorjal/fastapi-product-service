@@ -45,9 +45,5 @@ app = FastAPI()
 
 
 @app.post("/v1/products/create", response_model=schemas.Product)
-def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
-    # TODO save database
-    db_product = crud.create_product(db, product)
-    if db_product:
-        raise HTTPException(status_code=400, detail="Product already registered")
+def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):    
     return crud.create_product(db=db, product=product)
