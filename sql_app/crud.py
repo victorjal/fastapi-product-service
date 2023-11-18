@@ -30,7 +30,7 @@ def create_product(db: Session, product: schemas.Product) -> models.Product:
             db_config_attribute = models.ConfigAttribute(
                 config_name=config_attribute.config_name,
                 config_value=config_attribute.config_value,
-                id=config_attribute.id,
+                # id=config_attribute.id,
                 variant=db_variant
             )
             db.add(db_config_attribute)

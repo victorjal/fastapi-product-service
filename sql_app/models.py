@@ -1,46 +1,51 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, UniqueConstraint
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from __future__ import annotations
+from datetime import datetime
 
-Base = declarative_base()
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, DeclarativeBase, mapped_column, relationship
+# from sqlalchemy.ext.declarative import declarative_base
+
+class Base(DeclarativeBase):
+    pass
 
 class Product(Base):
     __tablename__ = 'products'
 
-    name = Column(String)
-    uom = Column(String)
-    category_name = Column(String)
-    id = Column(Integer, primary_key=True)
-    is_producible = Column(Boolean)
-    is_purchasable = Column(Boolean)
-    type = Column(String)
-    additional_info = Column(String)
-    purchase_uom = Column(String)
-    purchase_uom_conversion_rate = Column(Integer)
-    batch_tracked = Column(Boolean)
-    created_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    uom: Mapped[str]
+    category_name: Mapped[str]
+    is_producible: Mapped[bool]
+    is_purchasable: Mapped[bool]
+    type: Mapped[str]
+    additional_info: Mapped[str]
+    purchase_uom: Mapped[str]
+    purchase_uom_conversion_rate: Mapped[int]
+    batch_tracked: Mapped[bool]
+    created_at: Mapped[datetime]
+    updated_at: Mapped[datetime]
 
-    variants = relationship('Variant', backref='products')
+    variants: Mapped[list["Variant"]] = relationship(back_populates="product")
 
 class Variant(Base):
     __tablename__ = 'variants'
 
-    id = Column(Integer, primary_key=True)
-    sku = Column(String)
-    sales_price = Column(Integer)
-    purchase_price = Column(Integer)
-    product_id = Column(Integer, ForeignKey('products.id'))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    sku: Mapped[str]
+    sales_price: Mapped[int]
+    purchase_price: Mapped[int]
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
 
-    products = relationship('Product', backref='variants', foreign_keys=[product_id])
-    config_attributes = relationship('ConfigAttribute', backref='variants')
+    # product = relationship('Product', backref='variants', foreign_keys=[product_id])
+    product: Mapped["Product"] = relationship(back_populates="variants")
+    config_attributes: Mapped[list["ConfigAttribute"]] = relationship(back_populates="variant", cascade="all, delete")
 
 class ConfigAttribute(Base):
     __tablename__ = 'config_attributes'
 
-    config_name = Column(String)
-    config_value = Column(String)
-    variant_id = Column(Integer, ForeignKey('variants.id'))
-    id = Column(Integer, primary_key=True)
+    # id: Mapped[int] = mapped_column(primary_key=True)
+    config_name: Mapped[str] = mapped_column(primary_key=True)
+    config_value: Mapped[str]
+    variant_id: Mapped[int] = mapped_column(ForeignKey("variants.id", ondelete="CASCADE"))
 
-    variants = relationship('Variant', backref='config_attributes', cascade='all, delete', foreign_keys=[variant_id])
+    variant: Mapped["Variant"] = relationship(back_populates="config_attributes")
