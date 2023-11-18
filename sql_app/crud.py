@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
 
-def create_product(db: Session, product: schemas.Product) -> models.Product:
+def create_product(db: Session, product: schemas.Product):
     db_product = models.Product(
         name=product.name,
         uom=product.uom,
