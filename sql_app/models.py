@@ -3,7 +3,6 @@ from datetime import datetime
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, DeclarativeBase, mapped_column, relationship
-# from sqlalchemy.ext.declarative import declarative_base
 
 class Base(DeclarativeBase):
     pass
@@ -35,17 +34,18 @@ class Variant(Base):
     sales_price: Mapped[int]
     purchase_price: Mapped[int]
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
+    type: Mapped[str]
+    created_at: Mapped[datetime]
+    updated_at: Mapped[datetime]
 
-    # product = relationship('Product', backref='variants', foreign_keys=[product_id])
     product: Mapped["Product"] = relationship(back_populates="variants")
-    config_attributes: Mapped[list["ConfigAttribute"]] = relationship(back_populates="variant", cascade="all, delete")
+    config_attributes: Mapped[list["ConfigAttribute"]] = relationship(back_populates="variant")
 
 class ConfigAttribute(Base):
     __tablename__ = 'config_attributes'
 
-    # id: Mapped[int] = mapped_column(primary_key=True)
     config_name: Mapped[str] = mapped_column(primary_key=True)
     config_value: Mapped[str]
-    variant_id: Mapped[int] = mapped_column(ForeignKey("variants.id", ondelete="CASCADE"))
+    variant_id: Mapped[int] = mapped_column(ForeignKey("variants.id"))
 
     variant: Mapped["Variant"] = relationship(back_populates="config_attributes")
