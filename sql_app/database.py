@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 SQLALCHEMY_DATABASE_URL = "postgresql://oupjhsir:5gAvNARHhnyDQDaWWuY5FLkK4enMJv8n@chunee.db.elephantsql.com/oupjhsir"
@@ -6,6 +7,8 @@ SQLALCHEMY_DATABASE_URL = "postgresql://oupjhsir:5gAvNARHhnyDQDaWWuY5FLkK4enMJv8
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
 
 def get_db():
     db = SessionLocal()

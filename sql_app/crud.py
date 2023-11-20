@@ -3,6 +3,7 @@ from . import models, schemas
 
 def create_product(db: Session, product: schemas.Product):
     db_product = models.Product(
+        id=product.id,
         name=product.name,
         uom=product.uom,
         category_name=product.category_name,
@@ -23,17 +24,10 @@ def create_product(db: Session, product: schemas.Product):
             sales_price=variant.sales_price,
             purchase_price=variant.purchase_price,
             id=variant.id,
+            config_attributes=variant.model_dump(include={'config_attributes'})['config_attributes'],
             product=db_product
         )
         
-        for config_attribute in variant.config_attributes:
-            db_config_attribute = models.ConfigAttribute(
-                config_name=config_attribute.config_name,
-                config_value=config_attribute.config_value,
-                # id=config_attribute.id,
-                variant=db_variant
-            )
-            db.add(db_config_attribute)
         
         db.add(db_variant)
     
