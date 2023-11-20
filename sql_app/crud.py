@@ -24,9 +24,19 @@ def create_product(db: Session, product: schemas.Product):
             sales_price=variant.sales_price,
             purchase_price=variant.purchase_price,
             id=variant.id,
-            config_attributes=variant.model_dump(include={'config_attributes'})['config_attributes'],
+            type=variant.type,
+            created_at=variant.created_at,
+            updated_at=variant.updated_at,
             product=db_product
         )
+
+        for config_attribute in variant.config_attributes:
+            db_config_attribute = models.ConfigAttribute(
+                config_name=config_attribute.config_name,
+                config_value=config_attribute.config_value,
+                variant=db_variant
+            )
+            db.add(db_config_attribute)
         
         
         db.add(db_variant)

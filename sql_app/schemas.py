@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional
 
 
 
@@ -8,14 +8,16 @@ class ConfigAttribute(BaseModel):
     config_name: str
     config_value: str
 
-
 class VariantBase(BaseModel):
     id: int
     product_id: int
     sku: str
     sales_price: int
     purchase_price: int
-    config_attributes: List[ConfigAttribute] = []
+    type: str
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+    config_attributes: list[ConfigAttribute] = []
 
 class VariantCreate(VariantBase):
     pass

@@ -1,8 +1,7 @@
 from __future__ import annotations
 from datetime import datetime
 
-from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy import Column, ForeignKey
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, DeclarativeBase, mapped_column, relationship
 
 class Base(DeclarativeBase):
@@ -35,6 +34,18 @@ class Variant(Base):
     sales_price: Mapped[int]
     purchase_price: Mapped[int]
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
-    config_attributes = Column(JSONB)
+    type: Mapped[str]
+    created_at: Mapped[datetime]
+    updated_at: Mapped[datetime]
 
     product: Mapped["Product"] = relationship(back_populates="variants")
+    config_attributes: Mapped[list["ConfigAttribute"]] = relationship(back_populates="variant")
+
+class ConfigAttribute(Base):
+    __tablename__ = 'config_attributes'
+
+    config_name: Mapped[str] = mapped_column(primary_key=True)
+    config_value: Mapped[str]
+    variant_id: Mapped[int] = mapped_column(ForeignKey("variants.id"))
+
+    variant: Mapped["Variant"] = relationship(back_populates="config_attributes")
