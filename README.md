@@ -1,4 +1,4 @@
-# Product Management API
+# Create Product API
 
 This repository contains a product management API built with [FastAPI](https://fastapi.tiangolo.com/) and [PostgreSQL](https://www.postgresql.org/). The API provides a single transactional endpoint for creating products, featuring data validation using Pydantic.
 
